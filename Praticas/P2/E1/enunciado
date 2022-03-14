@@ -1,0 +1,2 @@
+Introduza um novo procedimento remoto: anula, sem argumentos, que anula as 2 últimas jogadas.
+O jogador anula a jogada do adversário e a sua, voltando a jogar. Chamada quando jogador indica 10 na sua jogada.
