@@ -4,8 +4,8 @@
 
 #### Content
 - Aulas Práticas
-		- Exercícios
-		- Enunciados
-		- Avaliações
+ - Exercícios
+ - Enunciados
+ - Avaliações
 - Aulas Teóricas
 - Projeto
