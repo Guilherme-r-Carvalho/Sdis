@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pt.tecnico.grpc;
+
+message RegisterRequest {
+	string client = 1;
+	uint32 balance = 2;
+}
+
+message RegisterResponse {
+}
+
+service BankingService {
+	rpc register(RegisterRequest) returns (RegisterResponse);
+}
