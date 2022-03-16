@@ -4,10 +4,15 @@ import java.util.Scanner;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 
 import pt.tecnico.grpc.BankingServiceGrpc;
 
 import pt.tecnico.grpc.Banking.RegisterRequest;
+import pt.tecnico.grpc.Banking.ConsultRequest;
+import pt.tecnico.grpc.Banking.ConsultResponse;
+import pt.tecnico.grpc.Banking.SubsidizeRequest;
+
 
 /** Client application main code. */
 public class BankingApp {
@@ -15,6 +20,8 @@ public class BankingApp {
 
 	private static final String EXIT_CMD = "exit";
 	private static final String REGISTER_CMD = "register";
+	private static final String CONSULT = "consult";
+	private static final String SUBSIDIZE = "subsidize";
 
 	public static void main(String[] args) {
 		System.out.println(BankingApp.class.getSimpleName());
@@ -61,6 +68,35 @@ public class BankingApp {
 				String balance = scanner.nextLine();
 				stub.register(RegisterRequest.newBuilder().setClient(client).setBalance(Integer.parseInt(balance)).build());
 				System.out.println("\n\n");
+			}
+
+			else if(CONSULT.equals(line)){
+				System.out.printf("> Type username you want to consult%n> ");
+				String client = scanner.nextLine();
+				try {
+					ConsultRequest request = ConsultRequest.newBuilder().setClient(client).build();
+					ConsultResponse response = stub.consult(request);
+					System.out.println(response.getBalance());
+				
+				} catch (StatusRuntimeException e) {
+					System.out.println("Caught exception with description: " + 
+						e.getStatus().getDescription());
+				}
+			}
+
+			else if(SUBSIDIZE.equals(line)){
+				System.out.printf("> Type your threshold%n> ");
+				String threshold = scanner.nextLine();
+				System.out.printf("> Type your amount%n> ");
+				String amount = scanner.nextLine();
+				try {
+					stub.subsidize(SubsidizeRequest.newBuilder().setThreshold(Integer.parseInt(threshold)).setAmount(Integer.parseInt(amount)).build());
+					System.out.println("\n\n");
+				
+				} catch (StatusRuntimeException e) {
+					System.out.println("Caught exception with description: " + 
+						e.getStatus().getDescription());
+				}
 			}
 		}
 	}
