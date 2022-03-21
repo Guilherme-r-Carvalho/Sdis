@@ -37,4 +37,17 @@ public class BankingServiceImpl extends BankingServiceGrpc.BankingServiceImplBas
 		rObserver.onNext(SubsidizeResponse.getDefaultInstance());
 		rObserver.onCompleted();
 	}
+	public void withdrawal(WithdrawalRequest request, StreamObserver<WithdrawalResponse> responseObserver) {
+		if (bank.isClient(request.getClient()) == false) {
+			responseObserver.onError(INVALID_ARGUMENT.withDescription("Input has to be a valid user!").asRuntimeException());
+		}
+		Integer balance = bank.getBalance(request.getClient());
+		Integer amount = request.getAmount();
+		if((balance-amount) < 0) {
+			responseObserver.onError(INVALID_ARGUMENT.withDescription("You are poor!").asRuntimeException());
+		}
+		bank.withdrawal(request.getClient(), amount);
+		responseObserver.onNext(WithdrawalResponse.getDefaultInstance());
+		responseObserver.onCompleted();
+	}
 }

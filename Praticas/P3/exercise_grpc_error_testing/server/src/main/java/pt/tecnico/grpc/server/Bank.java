@@ -31,4 +31,8 @@ public class Bank {
         }
         return true;
     }
+    public void withdrawal(String client, Integer amount) {
+        clients.replace(client, this.getBalance(client)-amount);
+        LOGGER.info("User: " + client + " has withdrawn: " + amount);
+    }
 }

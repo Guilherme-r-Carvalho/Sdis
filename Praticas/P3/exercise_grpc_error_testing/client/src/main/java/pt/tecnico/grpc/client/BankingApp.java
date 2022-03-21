@@ -5,13 +5,12 @@ import java.util.Scanner;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
-
-import pt.tecnico.grpc.BankingServiceGrpc;
-
-import pt.tecnico.grpc.Banking.RegisterRequest;
 import pt.tecnico.grpc.Banking.ConsultRequest;
 import pt.tecnico.grpc.Banking.ConsultResponse;
+import pt.tecnico.grpc.Banking.RegisterRequest;
 import pt.tecnico.grpc.Banking.SubsidizeRequest;
+import pt.tecnico.grpc.Banking.WithdrawalRequest;
+import pt.tecnico.grpc.BankingServiceGrpc;
 
 
 /** Client application main code. */
@@ -22,6 +21,7 @@ public class BankingApp {
 	private static final String REGISTER_CMD = "register";
 	private static final String CONSULT = "consult";
 	private static final String SUBSIDIZE = "subsidize";
+	private static final String WITHDRAWAL = "withdrawal";
 
 	public static void main(String[] args) {
 		System.out.println(BankingApp.class.getSimpleName());
@@ -93,6 +93,20 @@ public class BankingApp {
 					stub.subsidize(SubsidizeRequest.newBuilder().setThreshold(Integer.parseInt(threshold)).setAmount(Integer.parseInt(amount)).build());
 					System.out.println("\n\n");
 				
+				} catch (StatusRuntimeException e) {
+					System.out.println("Caught exception with description: " + 
+						e.getStatus().getDescription());
+				}
+			}
+
+			else if(WITHDRAWAL.equals(line)) {
+				System.out.printf("> Type your username you want to withdrawal%n> ");
+				String client = scanner.nextLine();
+				System.out.printf("> Type your amount%n> ");
+				String amount = scanner.nextLine();
+				try {
+					stub.withdrawal(WithdrawalRequest.newBuilder().setAmount(Integer.parseInt(amount)).setClient(client).build());
+					System.out.println("\n\n");
 				} catch (StatusRuntimeException e) {
 					System.out.println("Caught exception with description: " + 
 						e.getStatus().getDescription());
