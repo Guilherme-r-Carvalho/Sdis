@@ -22,12 +22,13 @@ public class BankingServiceImpl extends BankingServiceGrpc.BankingServiceImplBas
 	public void consult(ConsultRequest request, StreamObserver<ConsultResponse> responseObserver) {
 		if (bank.isClient(request.getClient()) == false) {
 			responseObserver.onError(INVALID_ARGUMENT.withDescription("Input has to be a valid user!").asRuntimeException());
-		}
+		}else{
 		Integer balance = bank.getBalance(request.getClient());
 		ConsultResponse response = ConsultResponse.newBuilder().setBalance(balance).build();
 
 	    responseObserver.onNext(response);
 	    responseObserver.onCompleted();
+		}
 	}
 	public void subsidize(SubsidizeRequest request,StreamObserver<SubsidizeResponse> rObserver) {
 		if (!bank.getSubsidize(request.getThreshold(), request.getAmount())) {
@@ -45,9 +46,12 @@ public class BankingServiceImpl extends BankingServiceGrpc.BankingServiceImplBas
 		Integer amount = request.getAmount();
 		if((balance-amount) < 0) {
 			responseObserver.onError(INVALID_ARGUMENT.withDescription("You are poor!").asRuntimeException());
+		}else if (balance == null || amount == null) {
+			responseObserver.onError(INVALID_ARGUMENT.withDescription("Amount or Balance are invalid!").asRuntimeException());
+		}else{
+			bank.withdrawal(request.getClient(), amount);
+			responseObserver.onNext(WithdrawalResponse.getDefaultInstance());
+			responseObserver.onCompleted();
 		}
-		bank.withdrawal(request.getClient(), amount);
-		responseObserver.onNext(WithdrawalResponse.getDefaultInstance());
-		responseObserver.onCompleted();
 	}
 }
